@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
 from shopping_cart.api.api import api_router
-import settings
+from shopping_cart import settings
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
