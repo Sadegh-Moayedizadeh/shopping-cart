@@ -2,13 +2,13 @@ from typing import Any, Dict, Optional, Union
 
 from sqlalchemy.orm import Session
 
-from app.core.security import get_password_hash, verify_password
+from shopping_cart.utils.security import get_password_hash, verify_password
 from shopping_cart.crud.base import CRUDBase
-from app.models.user import User
-from app.schemas.user import UserCreate, UserUpdate
+from shopping_cart.models import User
+from shopping_cart.schemas import UserCreate, UserUpdate
 
 
-class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
+class UserCRUD(CRUDBase[User, UserCreate, UserUpdate]):
     def get_by_email(self, db: Session, *, email: str) -> Optional[User]:
         return db.query(User).filter(User.email == email).first()
 
@@ -52,4 +52,4 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
         return user.is_superuser
 
 
-user = CRUDUser(User)
+user_crud = UserCRUD(User)

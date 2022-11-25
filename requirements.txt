@@ -1,0 +1,9 @@
+fastapi
+python-jose
+passlib
+pytest
+sqlalchemy
+python-dotenv
+pydantic
+# psycopg2 binary via apt-get
+alembic

@@ -1,8 +1,8 @@
 from sqlalchemy.orm import Session
 
-from app import crud, schemas
-from app.core.config import settings
-from app.db import base  # noqa: F401
+from shopping_cart.crud import user_crud
+from shopping_cart.schemas import UserCreate
+from shopping_cart import settings
 
 # make sure all SQL Alchemy models are imported (app.db.base) before initializing DB
 # otherwise, SQL Alchemy might fail to initialize relationships properly
@@ -15,11 +15,11 @@ def init_db(db: Session) -> None:
     # the tables un-commenting the next line
     # Base.metadata.create_all(bind=engine)
 
-    user = crud.user.get_by_email(db, email=settings.FIRST_SUPERUSER)
+    user = user_crud.get_by_email(db, email=settings.FIRST_SUPERUSER)
     if not user:
-        user_in = schemas.UserCreate(
+        user_in = UserCreate(
             email=settings.FIRST_SUPERUSER,
             password=settings.FIRST_SUPERUSER_PASSWORD,
             is_superuser=True,
         )
-        user = crud.user.create(db, obj_in=user_in)  # noqa: F841
+        user = user_crud.create(db, obj_in=user_in)  # noqa: F841
