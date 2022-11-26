@@ -13,11 +13,12 @@ def test_create_user(
     fake_password: str,
     delete_user_by_email: None
 ) -> None:
-    email = fake_email
-    password = fake_password
-    user_in = UserCreate(email=email, password=password)
+    # Arrange, Act
+    user_in = UserCreate(email=fake_email, password=fake_password)
     user = user_crud.create(db, obj_in=user_in)
-    assert user.email == email
+
+    # Assert
+    assert user.email == fake_email
     assert hasattr(user, "hashed_password")
 
 
@@ -27,12 +28,15 @@ def test_authenticate_user(
     fake_password: str,
     delete_user_by_email: None
 ) -> None:
-    email = fake_email
-    password = fake_password
-    user_in = UserCreate(email=email, password=password)
+    # Arrange
+    user_in = UserCreate(email=fake_email, password=fake_password)
     user = user_crud.create(db, obj_in=user_in)
+
+    # Act
     authenticated_user = user_crud.authenticate(
-        db, email=email, password=password)
+        db, email=fake_email, password=fake_password)
+
+    # Assert
     assert authenticated_user
     assert user.email == authenticated_user.email
 
@@ -42,38 +46,29 @@ def test_non_existing_user_should_not_authenticate(
     fake_email: str,
     fake_password: str
 ) -> None:
-    email = fake_email
-    password = fake_password
-    user = user_crud.authenticate(db, email=email, password=password)
+    # Arrange, Act
+    user = user_crud.authenticate(
+        db, email=fake_email, password=fake_password)
+
+    # Assert
     assert user is None
 
 
-def test_check_if_user_is_active(
+def test_created_user_should_be_active(
     db: Session,
     fake_email: str,
     fake_password: str,
     delete_user_by_email: None
 ) -> None:
-    email = fake_email
-    password = fake_password
-    user_in = UserCreate(email=email, password=password)
+    # Arrange
+    user_in = UserCreate(email=fake_email, password=fake_password)
     user = user_crud.create(db, obj_in=user_in)
+
+    # Act
     is_active = user_crud.is_active(user)
+
+    # Assert
     assert is_active is True
-
-
-def test_disabled_user_should_be_active(
-    db: Session,
-    fake_email: str,
-    fake_password: str,
-    delete_user_by_email: None
-) -> None:
-    email = fake_email
-    password = fake_password
-    user_in = UserCreate(email=email, password=password, disabled=True)
-    user = user_crud.create(db, obj_in=user_in)
-    is_active = user_crud.is_active(user)
-    assert is_active
 
 
 def test_superuser(
@@ -82,21 +77,32 @@ def test_superuser(
     fake_password: str,
     delete_user_by_email: None
 ) -> None:
-    user_in = UserCreate(email=fake_email, password=fake_password, is_superuser=True)
+    # Arrange
+    user_in = UserCreate(
+        email=fake_email, password=fake_password, is_superuser=True)
     user = user_crud.create(db, obj_in=user_in)
+
+    # Act
     is_superuser = user_crud.is_superuser(user)
+
+    # Assert
     assert is_superuser is True
 
 
-def test_check_if_user_is_superuser_normal_user(
+def test_user_that_is_not_superuser(
     db: Session,
     fake_email: str,
     fake_password: str,
     delete_user_by_email: None
 ) -> None:
+    # Arrange
     user_in = UserCreate(email=fake_email, password=fake_password)
     user = user_crud.create(db, obj_in=user_in)
+
+    # Act
     is_superuser = user_crud.is_superuser(user)
+
+    # Assert
     assert is_superuser is False
 
 
@@ -106,12 +112,18 @@ def test_get_user(
     fake_password: str,
     delete_user_by_email: None
 ) -> None:
-    user_in = UserCreate(email=fake_email, password=fake_password, is_superuser=True)
+    # Arrange
+    user_in = UserCreate(
+        email=fake_email, password=fake_password, is_superuser=True)
     user = user_crud.create(db, obj_in=user_in)
-    user_2 = user_crud.get(db, id=user.id)
-    assert user_2
-    assert user.email == user_2.email
-    assert jsonable_encoder(user) == jsonable_encoder(user_2)
+
+    # Acr
+    retrieved_user = user_crud.get(db, id=user.id)
+
+    # Assert
+    assert retrieved_user
+    assert user.email == retrieved_user.email
+    assert jsonable_encoder(user) == jsonable_encoder(retrieved_user)
 
 
 def test_update_user(
@@ -120,12 +132,17 @@ def test_update_user(
     fake_password: str,
     delete_user_by_email: None
 ) -> None:
+    # Arrange
     user_in = UserCreate(email=fake_email, password=fake_password, is_superuser=True)
     user = user_crud.create(db, obj_in=user_in)
+
+    # Act
     new_password = 'new_p@ssword'
     user_in_update = UserUpdate(password=new_password, is_superuser=True)
     user_crud.update(db, db_obj=user, obj_in=user_in_update)
-    user_2 = user_crud.get(db, id=user.id)
-    assert user_2
-    assert user.email == user_2.email
-    assert verify_password(new_password, user_2.hashed_password)
+    retrieved_user = user_crud.get(db, id=user.id)
+
+    # Assert
+    assert retrieved_user
+    assert user.email == retrieved_user.email
+    assert verify_password(new_password, retrieved_user.hashed_password)
