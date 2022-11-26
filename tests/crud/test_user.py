@@ -10,24 +10,31 @@ from shopping_cart.models import User
 def test_create_user(
     db: Session,
     fake_email: str,
+    fake_password: str,
     delete_user_by_email: None
 ) -> None:
     email = fake_email
-    password = 'p@ssword'
+    password = fake_password
     user_in = UserCreate(email=email, password=password)
     user = user_crud.create(db, obj_in=user_in)
     assert user.email == email
     assert hasattr(user, "hashed_password")
 
 
-# def test_authenticate_user(db: Session) -> None:
-#     email = random_email()
-#     password = random_lower_string()
-#     user_in = UserCreate(email=email, password=password)
-#     user = user_crud.create(db, obj_in=user_in)
-#     authenticated_user = user_crud.authenticate(db, email=email, password=password)
-#     assert authenticated_user
-#     assert user.email == authenticated_user.email
+def test_authenticate_user(
+    db: Session,
+    fake_email: str,
+    fake_password: str,
+    delete_user_by_email: None
+) -> None:
+    email = fake_email
+    password = fake_password
+    user_in = UserCreate(email=email, password=password)
+    user = user_crud.create(db, obj_in=user_in)
+    authenticated_user = user_crud.authenticate(
+        db, email=email, password=password)
+    assert authenticated_user
+    assert user.email == authenticated_user.email
 
 
 # def test_not_authenticate_user(db: Session) -> None:

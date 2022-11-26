@@ -16,6 +16,11 @@ def fake_email() -> str:
     return 'fake@email.address'
 
 
+@pytest.fixture
+def fake_password() -> str:
+    return 'p@ssword'
+
+
 @pytest.fixture(scope='function')
 def delete_user_by_email(db: Session, fake_email: str) -> None:
     yield
