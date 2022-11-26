@@ -4,30 +4,20 @@ from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
 
 # from shopping_cart import crud
-from shopping_cart.settings import API_STR, FIRST_SUPERUSER
+from shopping_cart.settings import API_STR
 from shopping_cart.schemas import UserCreate
 
 
-# def test_get_users_superuser_me(
-#     client: TestClient, superuser_token_headers: Dict[str, str]
-# ) -> None:
-#     r = client.get(f"{API_STR}/users/me", headers=superuser_token_headers)
-#     current_user = r.json()
-#     assert current_user
-#     assert current_user["is_active"] is True
-#     assert current_user["is_superuser"]
-#     assert current_user["email"] == FIRST_SUPERUSER
-
-
-# def test_get_users_normal_user_me(
-#     client: TestClient, normal_user_token_headers: Dict[str, str]
-# ) -> None:
-#     r = client.get(f"{settings.API_V1_STR}/users/me", headers=normal_user_token_headers)
-#     current_user = r.json()
-#     assert current_user
-#     assert current_user["is_active"] is True
-#     assert current_user["is_superuser"] is False
-#     assert current_user["email"] == settings.EMAIL_TEST_USER
+def test_get_users(
+    client: TestClient, user_stub_token_headers: Dict[str, str], fake_email: str
+) -> None:
+    r = client.get(f"{API_STR}/users/me", headers=user_stub_token_headers)
+    current_user = r.json()
+    assert r.status_code == 200
+    assert current_user
+    assert current_user["is_active"] is True
+    assert current_user["is_superuser"] is False
+    assert current_user["email"] == fake_email
 
 
 # def test_create_user_new_email(

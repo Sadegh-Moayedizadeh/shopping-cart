@@ -72,9 +72,6 @@ def read_user_me(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_active_user),
 ) -> Any:
-    """
-    Get current user.
-    """
     return current_user
 
 

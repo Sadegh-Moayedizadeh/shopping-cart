@@ -76,17 +76,3 @@ def dummy_teardown() -> None:
 def client() -> Generator:
     with TestClient(app) as c:
         yield c
-
-
-# @pytest.fixture(scope="module")
-# def superuser_token_headers(client: TestClient) -> Dict[str, str]:
-#     login_data = {
-#         "username": FIRST_SUPERUSER,
-#         "password": FIRST_SUPERUSER_PASSWORD,
-#     }
-#     r = client.post(
-#         f"{API_STR}/login/access-token", data=login_data)
-#     tokens = r.json()
-#     a_token = tokens["access_token"]
-#     headers = {"Authorization": f"Bearer {a_token}"}
-#     return headers

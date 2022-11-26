@@ -5,8 +5,6 @@ from fastapi.testclient import TestClient
 from shopping_cart.settings import FIRST_SUPERUSER, FIRST_SUPERUSER_PASSWORD, API_STR
 from shopping_cart.models import User
 
-# from app.core.config import settings
-
 
 def test_get_access_token(
     client: TestClient,
