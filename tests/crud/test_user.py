@@ -37,11 +37,15 @@ def test_authenticate_user(
     assert user.email == authenticated_user.email
 
 
-# def test_not_authenticate_user(db: Session) -> None:
-#     email = random_email()
-#     password = random_lower_string()
-#     user = user_crud.authenticate(db, email=email, password=password)
-#     assert user is None
+def test_non_existing_user_should_not_authenticate(
+    db: Session,
+    fake_email: str,
+    fake_password: str
+) -> None:
+    email = fake_email
+    password = fake_password
+    user = user_crud.authenticate(db, email=email, password=password)
+    assert user is None
 
 
 # def test_check_if_user_is_active(db: Session) -> None:
