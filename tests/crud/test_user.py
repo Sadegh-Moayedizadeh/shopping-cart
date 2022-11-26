@@ -11,7 +11,7 @@ def test_create_user(
     db: Session,
     fake_email: str,
     fake_password: str,
-    delete_user_by_email: None
+    delete_users: None
 ) -> None:
     # Arrange, Act
     user_in = UserCreate(email=fake_email, password=fake_password)
@@ -26,7 +26,7 @@ def test_authenticate_user(
     db: Session,
     fake_email: str,
     fake_password: str,
-    delete_user_by_email: None
+    delete_users: None
 ) -> None:
     # Arrange
     user_in = UserCreate(email=fake_email, password=fake_password)
@@ -58,7 +58,7 @@ def test_created_user_should_be_active(
     db: Session,
     fake_email: str,
     fake_password: str,
-    delete_user_by_email: None
+    delete_users: None
 ) -> None:
     # Arrange
     user_in = UserCreate(email=fake_email, password=fake_password)
@@ -75,7 +75,7 @@ def test_superuser(
     db: Session,
     fake_email: str,
     fake_password: str,
-    delete_user_by_email: None
+    delete_users: None
 ) -> None:
     # Arrange
     user_in = UserCreate(
@@ -93,7 +93,7 @@ def test_user_that_is_not_superuser(
     db: Session,
     fake_email: str,
     fake_password: str,
-    delete_user_by_email: None
+    delete_users: None
 ) -> None:
     # Arrange
     user_in = UserCreate(email=fake_email, password=fake_password)
@@ -110,7 +110,7 @@ def test_get_user(
     db: Session,
     fake_email: str,
     fake_password: str,
-    delete_user_by_email: None
+    delete_users: None
 ) -> None:
     # Arrange
     user_in = UserCreate(
@@ -130,10 +130,14 @@ def test_update_user(
     db: Session,
     fake_email: str,
     fake_password: str,
-    delete_user_by_email: None
+    delete_users: None
 ) -> None:
     # Arrange
-    user_in = UserCreate(email=fake_email, password=fake_password, is_superuser=True)
+    user_in = UserCreate(
+        email=fake_email,
+        password=fake_password,
+        is_superuser=True
+    )
     user = user_crud.create(db, obj_in=user_in)
 
     # Act

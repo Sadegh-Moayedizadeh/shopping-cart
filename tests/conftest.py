@@ -28,9 +28,9 @@ def fake_password() -> str:
 
 
 @pytest.fixture(scope='function')
-def delete_user_by_email(db: Session, fake_email: str) -> None:
+def delete_users(db: Session, fake_email: str) -> None:
     yield
-    db.query(User).filter_by(email=fake_email).delete()
+    db.query(User).delete()
     db.commit()
 
 
@@ -39,7 +39,7 @@ def user_stub(
     db: Session,
     fake_email: str,
     fake_password: str,
-    delete_user_by_email: None
+    delete_users: None
 ) -> User:
     user_in = UserCreate(email=fake_email, password=fake_password)
     user = user_crud.create(db, obj_in=user_in)
