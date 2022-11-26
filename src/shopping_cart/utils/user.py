@@ -12,6 +12,7 @@ from shopping_cart.schemas import TokenPayload
 from shopping_cart.utils.security import ALGORITHM
 from shopping_cart.settings import API_STR
 from shopping_cart.db import SessionLocal
+from shopping_cart import settings
 
 reusable_oauth2 = OAuth2PasswordBearer(
     tokenUrl=f"{API_STR}/login/access-token"
@@ -33,7 +34,7 @@ def get_current_user(
         payload = jwt.decode(
             token, settings.SECRET_KEY, algorithms=[ALGORITHM]
         )
-        token_data = schemas.TokenPayload(**payload)
+        token_data = TokenPayload(**payload)
     except (jwt.JWTError, ValidationError):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
