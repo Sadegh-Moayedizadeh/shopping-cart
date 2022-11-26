@@ -4,3 +4,5 @@ from .user import UserUpdate as UserUpdate
 from .user import UserInDBBase as UserInDBBase
 from .user import User as User
 from .user import UserInDB as UserInDB
+from .token import Token as Token
+from .token import TokenPayload as TokenPayload
