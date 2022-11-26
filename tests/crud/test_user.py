@@ -48,13 +48,18 @@ def test_non_existing_user_should_not_authenticate(
     assert user is None
 
 
-# def test_check_if_user_is_active(db: Session) -> None:
-#     email = random_email()
-#     password = random_lower_string()
-#     user_in = UserCreate(email=email, password=password)
-#     user = user_crud.create(db, obj_in=user_in)
-#     is_active = user_crud.is_active(user)
-#     assert is_active is True
+def test_check_if_user_is_active(
+    db: Session,
+    fake_email: str,
+    fake_password: str,
+    delete_user_by_email: None
+) -> None:
+    email = fake_email
+    password = fake_password
+    user_in = UserCreate(email=email, password=password)
+    user = user_crud.create(db, obj_in=user_in)
+    is_active = user_crud.is_active(user)
+    assert is_active is True
 
 
 # def test_check_if_user_is_active_inactive(db: Session) -> None:
