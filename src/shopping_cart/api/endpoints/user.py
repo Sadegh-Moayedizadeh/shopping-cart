@@ -8,14 +8,13 @@ from sqlalchemy.orm import Session
 from shopping_cart.crud import user_crud
 from shopping_cart.models import User
 from shopping_cart import schemas
-from shopping_cart.utils.user import (
-    get_db, get_current_active_superuser, get_current_active_user)
+from shopping_cart.utils.user import get_db, get_current_active_user
 
 
 router = APIRouter()
 
 
-@router.get("/", response_model=List[schemas.User])
+@router.get('/', response_model=List[schemas.User])
 def read_users(
     db: Session = Depends(get_db),
     skip: int = 0,
@@ -25,7 +24,7 @@ def read_users(
     return users
 
 
-@router.post("/", response_model=schemas.User)
+@router.post('/', response_model=schemas.User)
 def create_user(
     *,
     db: Session = Depends(get_db),
@@ -41,15 +40,15 @@ def create_user(
     return user
 
 
-@router.get("/me", response_model=schemas.User)
-def read_user_me(
+@router.get('/me', response_model=schemas.User)
+def read_current_user(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_active_user),
 ) -> Any:
     return current_user
 
 
-@router.get("/{user_id}", response_model=schemas.User)
+@router.get('/{user_id}', response_model=schemas.User)
 def read_user_by_id(
     user_id: int,
     db: Session = Depends(get_db),
@@ -58,7 +57,7 @@ def read_user_by_id(
     return user
 
 
-@router.put("/{user_id}", response_model=schemas.User)
+@router.put('/{user_id}', response_model=schemas.User)
 def update_user(
     *,
     db: Session = Depends(get_db),
@@ -69,7 +68,7 @@ def update_user(
     if not user:
         raise HTTPException(
             status_code=404,
-            detail="The user with this username does not exist in the system",
+            detail='The user with this username does not exist.',
         )
     user = user_crud.update(db, db_obj=user, obj_in=user_in)
     return user
