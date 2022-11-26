@@ -5,11 +5,10 @@ from fastapi.encoders import jsonable_encoder
 from pydantic.networks import EmailStr
 from sqlalchemy.orm import Session
 
+from shopping_cart import schemas
 from shopping_cart.crud import user_crud
 from shopping_cart.models import User
-from shopping_cart import schemas
-from shopping_cart.utils.user import get_db, get_current_active_user
-
+from shopping_cart.utils.user import get_current_active_user, get_db
 
 router = APIRouter()
 

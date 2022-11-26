@@ -2,9 +2,9 @@ from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 
 from shopping_cart.crud import user_crud
-from shopping_cart.utils.security import verify_password
-from shopping_cart.schemas import UserCreate, UserUpdate
 from shopping_cart.models import User
+from shopping_cart.schemas import UserCreate, UserUpdate
+from shopping_cart.utils.security import verify_password
 
 
 def test_create_user(

@@ -2,8 +2,9 @@ from typing import Dict
 
 from fastapi.testclient import TestClient
 
-from shopping_cart.settings import FIRST_SUPERUSER, FIRST_SUPERUSER_PASSWORD, API_STR
 from shopping_cart.models import User
+from shopping_cart.settings import (API_STR, FIRST_SUPERUSER,
+                                    FIRST_SUPERUSER_PASSWORD)
 
 
 def test_get_access_token(

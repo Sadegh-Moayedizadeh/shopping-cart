@@ -3,10 +3,10 @@ from typing import Dict
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
 
-from shopping_cart.settings import API_STR
-from shopping_cart.schemas import UserCreate
 from shopping_cart.crud import user_crud
 from shopping_cart.models import User
+from shopping_cart.schemas import UserCreate
+from shopping_cart.settings import API_STR
 
 
 def test_get_users(

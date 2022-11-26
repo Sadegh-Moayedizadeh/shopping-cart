@@ -5,13 +5,13 @@ from fastapi import APIRouter, Body, Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
+from shopping_cart import schemas
 from shopping_cart.crud import user_crud
 from shopping_cart.models import User
-from shopping_cart import schemas
-from shopping_cart.utils.user import get_db, get_current_active_user, get_current_user
-from shopping_cart.utils.security import create_access_token, get_password_hash
 from shopping_cart.settings import ACCESS_TOKEN_EXPIRE_MINUTES
-
+from shopping_cart.utils.security import create_access_token, get_password_hash
+from shopping_cart.utils.user import (get_current_active_user,
+                                      get_current_user, get_db)
 
 router = APIRouter()
 

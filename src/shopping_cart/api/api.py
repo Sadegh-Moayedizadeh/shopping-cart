@@ -1,6 +1,6 @@
 from fastapi import APIRouter
-from shopping_cart.api.endpoints import user, login
 
+from shopping_cart.api.endpoints import login, user
 
 api_router = APIRouter()
 
