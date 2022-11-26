@@ -4,10 +4,15 @@ from sqlalchemy.orm import Session
 from shopping_cart.crud import user_crud
 # from app.core.security import verify_password
 from shopping_cart.schemas import UserCreate, UserUpdate
+from shopping_cart.models import User
 
 
-def test_create_user(db: Session) -> None:
-    email = 'fake@email.address'
+def test_create_user(
+    db: Session,
+    fake_email: str,
+    delete_user_by_email: None
+) -> None:
+    email = fake_email
     password = 'p@ssword'
     user_in = UserCreate(email=email, password=password)
     user = user_crud.create(db, obj_in=user_in)
