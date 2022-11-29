@@ -9,3 +9,4 @@ pydantic
 alembic
 httpx
 python-multipart
+requests

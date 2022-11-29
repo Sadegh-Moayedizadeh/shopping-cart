@@ -1,7 +1,7 @@
 #!/bin/bash
 
 export PYTHONPATH=.:./src:$PYTHONPATH
-pytest
+pytest && flake8 && isort -c .
 
 exit_code=$?
 

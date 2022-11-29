@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Column, Integer, String
+from sqlalchemy import Boolean, Column, Integer, String, ARRAY
 from sqlalchemy.orm import relationship
 
 from shopping_cart.db import Base
@@ -11,3 +11,5 @@ class User(Base):
     hashed_password = Column(String, nullable=False)
     is_active = Column(Boolean(), default=True)
     is_superuser = Column(Boolean(), default=False)
+    # Only postgreql backend has support for ARRAY operations
+    product_ids = Column(ARRAY(Integer), nullable=True, default=[])
