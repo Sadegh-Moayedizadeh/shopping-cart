@@ -24,6 +24,17 @@ def test_view_product_with_an_existing_id_should_return_200_response(
     assert response.status_code == 200
 
 
+def test_view_all_products_should_always_return_200_response(
+    client: TestClient
+) -> None:
+    # Arrange, Act
+    response = client.get(
+        '{}/products/view-all-products'.format(API_STR)
+    )
+    # Assert
+    assert response.status_code == 200
+
+
 def test_add_product_should_update_users_product_ids() -> None:
     pass
 

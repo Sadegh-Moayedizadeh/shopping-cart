@@ -6,7 +6,33 @@
 # Purchase the selected products
 
 import requests
+from typing import Any
+
 from fastapi import APIRouter, HTTPException
+
+from shopping_cart.utils.products import (
+    get_single_product_api_address, get_all_products_api_address)
+
+router = APIRouter()
+
+
+@router.get('/view-single-product/{product_id}')
+def view_single_product(
+    product_id: int
+) -> Any:
+    response = requests.get(get_single_product_api_address(product_id))
+    if not response.content:
+        raise HTTPException(
+            status_code=404,
+            detail='There is no product with the given id.',
+        )
+    return response.json()
+
+
+@router.get('/view-all-products')
+def veiw_all_products() -> Any:
+    return requests.get(get_all_products_api_address()).json()
+
 
 # from beanie import PydanticObjectId
 # from starlette.responses import JSONResponse
@@ -18,23 +44,6 @@ from fastapi import APIRouter, HTTPException
 # from app.routes import schemas
 # from app.core.authentication import get_current_user, User
 # from app.routes.schemas import Items
-
-from shopping_cart.utils.products import get_single_product_api_address
-
-router = APIRouter()
-
-
-@router.get('/view-single-product/{product_id}')
-def view_single_product(
-    product_id: int
-) -> None:
-    response = requests.get(get_single_product_api_address(product_id))
-    if not response.content:
-        raise HTTPException(
-            status_code=404,
-            detail='There is no product with the given id.',
-        )
-    return response.json()
 
 
 # @router.post('/add')
