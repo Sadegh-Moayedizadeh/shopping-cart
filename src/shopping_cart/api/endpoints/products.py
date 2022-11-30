@@ -1,5 +1,3 @@
-# View Product(done)
-# View all products (see how many they are. think of something like pagination)
 # Add product
 # Remove product
 # Show user's selected products
@@ -32,6 +30,11 @@ def view_single_product(
 @router.get('/view-all-products')
 def veiw_all_products() -> Any:
     return requests.get(get_all_products_api_address()).json()
+
+
+@router.get('/add-product/{product_id}')
+def add_product_to_users_cart() -> Any:
+    pass
 
 
 # from beanie import PydanticObjectId
