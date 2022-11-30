@@ -1,3 +1,29 @@
+from fastapi.testclient import TestClient
+from shopping_cart.settings import API_STR
+
+
+def test_view_product_with_non_existing_id_should_return_404_response(
+    client: TestClient
+) -> None:
+    # Arrange, Act
+    response = client.get(
+        '{}/products/view-single-product/{}'.format(API_STR, '-1')
+    )
+    # Assert
+    assert response.status_code == 404
+
+
+def test_view_product_with_an_existing_id_should_return_200_response(
+    client: TestClient
+) -> None:
+    # Arrange, Act
+    response = client.get(
+        '{}/products/view-single-product/{}'.format(API_STR, '1')
+    )
+    # Assert
+    assert response.status_code == 200
+
+
 def test_add_product_should_update_users_product_ids() -> None:
     pass
 
