@@ -73,7 +73,7 @@ class UserCRUD(CRUDBase[User, UserCreate, UserUpdate]):
         update_data = UserProductIds(product_ids=updated_product_ids)
         return super().update(db, db_obj=user, obj_in=update_data)
 
-    def remove_all_products(self, db: Session, *, product_id: int, email: str) -> User:
+    def remove_all_products(self, db: Session, *, email: str) -> User:
         user = self.get_by_email(db=db, email=email)
         if not user:
             return

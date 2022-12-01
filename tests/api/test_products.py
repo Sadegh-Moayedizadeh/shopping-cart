@@ -183,25 +183,28 @@ def test_show_users_selected_products_should_return_all_its_product_ids(
     assert response.json() == [1]
 
 
-# def test_purchase_selected_products_should_empty_users_product_ids(
-#     client: TestClient,
-#     user_stub_token_headers: Dict[str, str],
-#     db: Session,
-#     user_stub: User,
-#     delete_users: None
-# ) -> None:
-#     # Arrange
-#     user_crud.add_product(db=db, product_id=1, email=user_stub.email)
-#     db.refresh(user_stub)
+def test_purchase_selected_products_should_empty_users_product_ids(
+    client: TestClient,
+    user_stub_token_headers: Dict[str, str],
+    db: Session,
+    user_stub: User,
+    delete_users: None
+) -> None:
+    # Arrange
+    user_crud.add_product(db=db, product_id=1, email=user_stub.email)
+    user_crud.add_product(db=db, product_id=2, email=user_stub.email)
+    db.refresh(user_stub)
 
-#     # Assume
-#     assert user_stub.product_ids == [1]
+    # Assume
+    assert user_stub.product_ids == [1, 2]
 
-#     # Act
-#     response = client.get(
-#         '{}/products/purchase'.format(API_STR),
-#         headers=user_stub_token_headers
-#     )
+    # Act
+    response = client.put(
+        '{}/products/purchase'.format(API_STR),
+        headers=user_stub_token_headers
+    )
+    db.refresh(user_stub)
 
-#     # Assert
-#     assert response.json() == [1]
+    # Assert
+    assert response.json()['product_ids'] == []
+    assert user_stub.product_ids == []
