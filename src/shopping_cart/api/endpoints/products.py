@@ -7,11 +7,14 @@ import requests
 from typing import Any
 
 from fastapi import APIRouter, HTTPException, Depends
+from sqlalchemy.orm import Session
 
 from shopping_cart.utils.products import (
     get_single_product_api_address, get_all_products_api_address)
-from shopping_cart.utils.user import get_current_active_user
+from shopping_cart.utils.user import get_current_active_user, get_db
 from shopping_cart.models import User
+from shopping_cart.crud import user_crud
+from shopping_cart import schemas
 
 router = APIRouter()
 
@@ -34,19 +37,24 @@ def veiw_all_products() -> Any:
     return requests.get(get_all_products_api_address()).json()
 
 
-# @router.put('/add-product')
-# def add_product_to_users_cart(
-#     *,
-#     product_id: int,
-#     current_user: User = Depends(get_current_active_user),
-# ) -> Any:
-#     response = requests.get(get_single_product_api_address(product_id))
-#     if not response.content:
-#         raise HTTPException(
-#             status_code=404,
-#             detail='There is no product with the given id.',
-#         )
-#     product_id = response.json()['id']
+@router.put('/add-product', response_model=schemas.User)
+def add_product_to_users_cart(
+    *,
+    product_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_active_user)
+) -> Any:
+    user = user_crud.add_product(
+        db=db,
+        product_id=product_id,
+        email=current_user.email
+    )
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail='No product with the given id or no user.',
+        )
+    return user
 
 
 # from beanie import PydanticObjectId

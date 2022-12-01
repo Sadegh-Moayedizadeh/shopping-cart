@@ -73,8 +73,14 @@ class UserCRUD(CRUDBase[User, UserCreate, UserUpdate]):
         update_data = UserUpdateProductIds(product_ids=updated_product_ids)
         return super().update(db, db_obj=user, obj_in=update_data)
 
-    def view_all_product_ids(self) -> Iterable[int]:
-        pass
+    def remove_all_products(self, db: Session, *, product_id: int, email: str) -> User:
+        user = self.get_by_email(db=db, email=email)
+        if not user:
+            return
+
+        updated_product_ids = []
+        update_data = UserUpdateProductIds(product_ids=updated_product_ids)
+        return super().update(db, db_obj=user, obj_in=update_data)
 
     def is_active(self, user: User) -> bool:
         return user.is_active

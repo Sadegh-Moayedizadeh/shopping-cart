@@ -37,7 +37,7 @@ def test_create_new_user(
 ) -> None:
     # Arrange
     email_address = 'another.fake@email.address'
-    data = {'email': 'another.fake@email.address', 'password': 'p@ssword'}
+    data = {'email': email_address, 'password': 'p@ssword'}
 
     # Act
     response = client.post(
@@ -45,13 +45,13 @@ def test_create_new_user(
         headers=user_stub_token_headers,
         json=data
     )
-    created_user = response.json()
+    created_user_json = response.json()
     user = user_crud.get_by_email(db, email=email_address)
 
     # Assert
     assert response.status_code == 200
     assert user
-    assert user.email == created_user['email']
+    assert user.email == created_user_json['email']
 
 
 def test_get_an_existing_user_by_id(
@@ -99,3 +99,29 @@ def test_create_user_with_existing_username(
 
     # Assert
     assert response.status_code == 400
+
+
+def test_update_existing_user(
+    client: TestClient,
+    user_stub_token_headers: Dict[str, str],
+    db: Session,
+    user_stub: User,
+    fake_email: str,
+    fake_password: str
+) -> None:
+    # Arrange
+    new_email = 'new@email.address'
+    data = {'email': new_email, 'password': fake_password}
+
+    # Act
+    response = client.put(
+        '{}/users/{}'.format(API_STR, user_stub.id),
+        headers=user_stub_token_headers,
+        json=data
+    )
+    db.refresh(user_stub)
+
+    # Assert
+    assert response.status_code == 200
+    assert response.json()['email'] == new_email
+    assert user_stub.email == new_email
