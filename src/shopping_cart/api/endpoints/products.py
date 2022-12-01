@@ -1,16 +1,16 @@
-import requests
 from typing import Any
 
-from fastapi import APIRouter, HTTPException, Depends
+import requests
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from shopping_cart.utils.products import (
-    get_single_product_api_address, get_all_products_api_address)
-from shopping_cart.utils.user import get_current_active_user
-from shopping_cart.utils.db import get_db
-from shopping_cart.models import User
-from shopping_cart.crud import user_crud
 from shopping_cart import schemas
+from shopping_cart.crud import user_crud
+from shopping_cart.models import User
+from shopping_cart.utils.db import get_db
+from shopping_cart.utils.products import (get_all_products_api_address,
+                                          get_single_product_api_address)
+from shopping_cart.utils.user import get_current_active_user
 
 router = APIRouter()
 

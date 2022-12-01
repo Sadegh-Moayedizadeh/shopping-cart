@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Column, Integer, String, ARRAY
+from sqlalchemy import ARRAY, Boolean, Column, Integer, String
 from sqlalchemy.orm import relationship
 
 from shopping_cart.db import Base

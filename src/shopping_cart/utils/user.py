@@ -1,5 +1,3 @@
-from typing import Generator
-
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import jwt
@@ -11,8 +9,8 @@ from shopping_cart.crud import user_crud
 from shopping_cart.models import User
 from shopping_cart.schemas import TokenPayload
 from shopping_cart.settings import API_STR
-from shopping_cart.utils.security import ALGORITHM
 from shopping_cart.utils.db import get_db
+from shopping_cart.utils.security import ALGORITHM
 
 reusable_oauth2 = OAuth2PasswordBearer(
     tokenUrl=f"{API_STR}/login/access-token"

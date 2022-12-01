@@ -1,11 +1,11 @@
 from typing import Dict
-from sqlalchemy.orm import Session
 
 from fastapi.testclient import TestClient
+from sqlalchemy.orm import Session
 
-from shopping_cart.settings import API_STR
-from shopping_cart.models import User
 from shopping_cart.crud import user_crud
+from shopping_cart.models import User
+from shopping_cart.settings import API_STR
 
 
 def test_view_product_with_non_existing_id_should_return_404_response(

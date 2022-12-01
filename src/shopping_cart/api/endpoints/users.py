@@ -6,8 +6,8 @@ from sqlalchemy.orm import Session
 from shopping_cart import schemas
 from shopping_cart.crud import user_crud
 from shopping_cart.models import User
-from shopping_cart.utils.user import get_current_active_user
 from shopping_cart.utils.db import get_db
+from shopping_cart.utils.user import get_current_active_user
 
 router = APIRouter()
 

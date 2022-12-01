@@ -9,9 +9,9 @@ from shopping_cart import schemas
 from shopping_cart.crud import user_crud
 from shopping_cart.models import User
 from shopping_cart.settings import ACCESS_TOKEN_EXPIRE_MINUTES
+from shopping_cart.utils.db import get_db
 from shopping_cart.utils.security import create_access_token
 from shopping_cart.utils.user import get_current_user
-from shopping_cart.utils.db import get_db
 
 router = APIRouter()
 
