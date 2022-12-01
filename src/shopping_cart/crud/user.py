@@ -1,5 +1,5 @@
 import requests
-from typing import Any, Dict, Optional, Union, Iterable
+from typing import Any, Dict, Optional, Union
 from contextlib import suppress
 
 from sqlalchemy.orm import Session

@@ -1,7 +1,7 @@
 from datetime import timedelta
 from typing import Any
 
-from fastapi import APIRouter, Body, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
@@ -9,14 +9,14 @@ from shopping_cart import schemas
 from shopping_cart.crud import user_crud
 from shopping_cart.models import User
 from shopping_cart.settings import ACCESS_TOKEN_EXPIRE_MINUTES
-from shopping_cart.utils.security import create_access_token, get_password_hash
-from shopping_cart.utils.user import (get_current_active_user,
-                                      get_current_user, get_db)
+from shopping_cart.utils.security import create_access_token
+from shopping_cart.utils.user import get_current_user
+from shopping_cart.utils.db import get_db
 
 router = APIRouter()
 
 
-@router.post("/login/access-token", response_model=schemas.Token)
+@router.post("/access-token", response_model=schemas.Token)
 def login_access_token(
     db: Session = Depends(get_db),
     form_data: OAuth2PasswordRequestForm = Depends()
@@ -39,6 +39,6 @@ def login_access_token(
     }
 
 
-@router.post("/login/test-token", response_model=schemas.User)
+@router.post("/test-token", response_model=schemas.User)
 def test_token(current_user: User = Depends(get_current_user)) -> Any:
     return current_user

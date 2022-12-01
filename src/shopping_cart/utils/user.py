@@ -8,23 +8,15 @@ from sqlalchemy.orm import Session
 
 from shopping_cart import settings
 from shopping_cart.crud import user_crud
-from shopping_cart.db import SessionLocal
 from shopping_cart.models import User
 from shopping_cart.schemas import TokenPayload
 from shopping_cart.settings import API_STR
 from shopping_cart.utils.security import ALGORITHM
+from shopping_cart.utils.db import get_db
 
 reusable_oauth2 = OAuth2PasswordBearer(
     tokenUrl=f"{API_STR}/login/access-token"
 )
-
-
-def get_db() -> Generator:
-    try:
-        db = SessionLocal()
-        yield db
-    finally:
-        db.close()
 
 
 def get_current_user(
