@@ -9,8 +9,7 @@ from shopping_cart.db import SessionLocal
 from shopping_cart.main import app
 from shopping_cart.models import User
 from shopping_cart.schemas import UserCreate
-from shopping_cart.settings import (API_STR, FIRST_SUPERUSER,
-                                    FIRST_SUPERUSER_PASSWORD)
+from shopping_cart.settings import API_STR
 
 
 @pytest.fixture(scope="session")
