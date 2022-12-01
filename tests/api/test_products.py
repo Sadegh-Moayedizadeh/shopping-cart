@@ -103,12 +103,60 @@ def test_add_product_for_an_unauthorized_user_should_return_401_response(
     assert user_stub.product_ids == []
 
 
-def test_remove_product_should_remove_its_id_from_users_product_ids() -> None:
-    pass
+def test_remove_product_should_remove_its_id_from_users_product_ids(
+    client: TestClient,
+    user_stub_token_headers: Dict[str, str],
+    db: Session,
+    user_stub: User,
+    delete_users: None
+) -> None:
+    # Arrange
+    user_crud.add_product(db=db, product_id=1, email=user_stub.email)
+    db.refresh(user_stub)
+
+    # Assume
+    assert user_stub.product_ids == [1]
+
+    # Act
+    response = client.put(
+        '{}/products/remove-product'.format(API_STR),
+        params={'product_id': 1},
+        headers=user_stub_token_headers
+    )
+    updated_user_json = response.json()
+    db.refresh(user_stub)
+
+    # Assert
+    assert user_stub.product_ids == []
+    assert updated_user_json['product_ids'] == []
 
 
-def test_remove_product_that_is_not_present_in_users_product_ids_should_raise_error() -> None:  # noqa: E501
-    pass
+def test_remove_product_that_is_not_present_in_users_product_ids_should_remain_product_ids_intact(
+    client: TestClient,
+    user_stub_token_headers: Dict[str, str],
+    db: Session,
+    user_stub: User,
+    delete_users: None
+) -> None:
+    # Arrange
+    user_crud.add_product(db=db, product_id=1, email=user_stub.email)
+    db.refresh(user_stub)
+
+    # Assume
+    assert user_stub.product_ids == [1]
+
+    # Act
+    response = client.put(
+        '{}/products/remove-product'.format(API_STR),
+        params={'product_id': 2},
+        headers=user_stub_token_headers
+    )
+    updated_user_json = response.json()
+    db.refresh(user_stub)
+
+    # Assert
+    assert user_stub.product_ids == [1]
+    assert updated_user_json['product_ids'] == [1]
 
 
 def test_show_users_selected_products_should_return_all_its_product_ids() -> None:  # noqa: E501

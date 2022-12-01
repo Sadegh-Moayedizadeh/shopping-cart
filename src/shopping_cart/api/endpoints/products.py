@@ -1,4 +1,3 @@
-# Add product
 # Remove product
 # Show user's selected products
 # Purchase the selected products
@@ -38,13 +37,33 @@ def veiw_all_products() -> Any:
 
 
 @router.put('/add-product', response_model=schemas.User)
-def add_product_to_users_cart(
+def add_product_to_user(
     *,
     product_id: int,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_active_user)
 ) -> Any:
     user = user_crud.add_product(
+        db=db,
+        product_id=product_id,
+        email=current_user.email
+    )
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail='No product with the given id or no user.',
+        )
+    return user
+
+
+@router.put('/remove-product', response_model=schemas.User)
+def remove_product_from_user(
+    *,
+    product_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_active_user)
+) -> Any:
+    user = user_crud.remove_product(
         db=db,
         product_id=product_id,
         email=current_user.email
