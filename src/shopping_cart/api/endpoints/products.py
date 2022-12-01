@@ -6,10 +6,12 @@
 import requests
 from typing import Any
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 
 from shopping_cart.utils.products import (
     get_single_product_api_address, get_all_products_api_address)
+from shopping_cart.utils.user import get_current_active_user
+from shopping_cart.models import User
 
 router = APIRouter()
 
@@ -32,9 +34,19 @@ def veiw_all_products() -> Any:
     return requests.get(get_all_products_api_address()).json()
 
 
-@router.get('/add-product/{product_id}')
-def add_product_to_users_cart() -> Any:
-    pass
+# @router.put('/add-product')
+# def add_product_to_users_cart(
+#     *,
+#     product_id: int,
+#     current_user: User = Depends(get_current_active_user),
+# ) -> Any:
+#     response = requests.get(get_single_product_api_address(product_id))
+#     if not response.content:
+#         raise HTTPException(
+#             status_code=404,
+#             detail='There is no product with the given id.',
+#         )
+#     product_id = response.json()['id']
 
 
 # from beanie import PydanticObjectId

@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 
 from pydantic import BaseModel, EmailStr
 
@@ -24,6 +24,10 @@ class UserInDBBase(UserBase):
 
     class Config:
         orm_mode = True
+
+
+class UserUpdateProductIds(BaseModel):
+    product_ids: List[int]
 
 
 class User(UserInDBBase):

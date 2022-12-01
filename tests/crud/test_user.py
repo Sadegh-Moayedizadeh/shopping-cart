@@ -150,3 +150,45 @@ def test_update_user(
     assert retrieved_user
     assert user.email == retrieved_user.email
     assert verify_password(new_password, retrieved_user.hashed_password)
+
+
+def test_add_product_with_non_existing_id_should_not_change_user(
+    db: Session,
+    user_stub: User,
+    delete_users: None
+) -> None:
+    # Arrange, Act
+    user_crud.add_product(db=db, product_id=-1, email=user_stub.email)
+
+    # Assert
+    assert user_stub.product_ids == []
+
+
+def test_add_product_with_valid_id_should_update_users_product_ids(
+    db: Session,
+    user_stub: User,
+    delete_users: None
+) -> None:
+    # Arrange, Act
+    user_crud.add_product(db=db, product_id=1, email=user_stub.email)
+
+    # Assert
+    assert user_stub.product_ids == [1]
+
+
+def test_remove_product(
+    db: Session,
+    user_stub: User,
+    delete_users: None
+) -> None:
+    # Arrange
+    user_crud.add_product(db=db, product_id=1, email=user_stub.email)
+
+    # Assume
+    assert user_stub.product_ids == [1]
+
+    # Act
+    user_crud.remove_product(db=db, product_id=1, email=user_stub.email)
+
+    # Assert
+    assert user_stub.product_ids == []
