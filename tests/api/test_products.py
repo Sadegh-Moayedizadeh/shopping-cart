@@ -159,9 +159,49 @@ def test_remove_product_that_is_not_present_in_users_product_ids_should_remain_p
     assert updated_user_json['product_ids'] == [1]
 
 
-def test_show_users_selected_products_should_return_all_its_product_ids() -> None:  # noqa: E501
-    pass
+def test_show_users_selected_products_should_return_all_its_product_ids(
+    client: TestClient,
+    user_stub_token_headers: Dict[str, str],
+    db: Session,
+    user_stub: User,
+    delete_users: None
+) -> None:
+    # Arrange
+    user_crud.add_product(db=db, product_id=1, email=user_stub.email)
+    db.refresh(user_stub)
+
+    # Assume
+    assert user_stub.product_ids == [1]
+
+    # Act
+    response = client.get(
+        '{}/products/all-selected-products'.format(API_STR),
+        headers=user_stub_token_headers
+    )
+
+    # Assert
+    assert response.json() == [1]
 
 
-def test_purchase_selected_products_should_empty_users_product_ids() -> None:
-    pass
+# def test_purchase_selected_products_should_empty_users_product_ids(
+#     client: TestClient,
+#     user_stub_token_headers: Dict[str, str],
+#     db: Session,
+#     user_stub: User,
+#     delete_users: None
+# ) -> None:
+#     # Arrange
+#     user_crud.add_product(db=db, product_id=1, email=user_stub.email)
+#     db.refresh(user_stub)
+
+#     # Assume
+#     assert user_stub.product_ids == [1]
+
+#     # Act
+#     response = client.get(
+#         '{}/products/purchase'.format(API_STR),
+#         headers=user_stub_token_headers
+#     )
+
+#     # Assert
+#     assert response.json() == [1]

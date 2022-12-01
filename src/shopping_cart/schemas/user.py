@@ -27,7 +27,7 @@ class UserInDBBase(UserBase):
         orm_mode = True
 
 
-class UserUpdateProductIds(BaseModel):
+class UserProductIds(BaseModel):
     product_ids: List[int]
 
 

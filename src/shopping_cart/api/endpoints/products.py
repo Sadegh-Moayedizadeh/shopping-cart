@@ -76,6 +76,13 @@ def remove_product_from_user(
     return user
 
 
+@router.get('/all-selected-products')
+def get_all_products_for_user(
+    current_user: User = Depends(get_current_active_user)
+) -> Any:
+    return current_user.product_ids
+
+
 # from beanie import PydanticObjectId
 # from starlette.responses import JSONResponse
 # from fastapi import APIRouter, Depends, status
