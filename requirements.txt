@@ -5,10 +5,7 @@ pytest
 sqlalchemy
 python-dotenv
 pydantic
-# psycopg2 binary via apt-get
-# uvicorn via apt-get
-# postgres via apt-get
-# don't forget to run your migrations
+psycopg2
 alembic
 httpx
 python-multipart
