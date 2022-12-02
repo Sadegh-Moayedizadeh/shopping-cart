@@ -7,7 +7,6 @@ from sqlalchemy.orm import Session
 from shopping_cart.crud.base import CRUDBase
 from shopping_cart.models import User, Cart
 from shopping_cart.schemas import UserCreate, UserUpdate
-from shopping_cart.utils.products import get_single_product_api_address
 from shopping_cart.utils.security import get_password_hash, verify_password
 
 
