@@ -61,6 +61,7 @@ def update_user(
     db: Session = Depends(get_db),
     user_id: int,
     user_in: schemas.UserUpdate,
+    current_user: User = Depends(get_current_active_user)
 ) -> Any:
     user = user_crud.get(db, id=user_id)
     if not user:
