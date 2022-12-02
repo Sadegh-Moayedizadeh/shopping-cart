@@ -22,7 +22,8 @@ def test_view_product_with_non_existing_id_should_return_404_response(
 
 def test_view_product_with_an_existing_id_should_return_200_response(
     client: TestClient,
-    db: Session
+    db: Session,
+    delete_products: None
 ) -> None:
     # Arrange
     product_in = ProductCreate(
@@ -42,15 +43,38 @@ def test_view_product_with_an_existing_id_should_return_200_response(
     assert response.status_code == 200
 
 
-def test_view_all_products_should_always_return_200_response(
-    client: TestClient
+def test_view_all_products(
+    client: TestClient,
+    db: Session,
+    delete_products: None
 ) -> None:
-    # Arrange, Act
+    # Arrange
+    first_product_in = ProductCreate(
+        title='first_fake_title',
+        price=0,
+        category='first_fake_category',
+        description='first_fake_description',
+        image='first_fake_image_address'
+    )
+    first_product = product_crud.create(db=db, obj_in=first_product_in)
+
+    second_product_in = ProductCreate(
+        title='second_fake_title',
+        price=0,
+        category='second_fake_category',
+        description='second_fake_description',
+        image='second_fake_image_address'
+    )
+    second_product = product_crud.create(db=db, obj_in=second_product_in)
+
+    # Act
     response = client.get(
         '{}/products/view-all-products'.format(API_STR)
     )
+
     # Assert
     assert response.status_code == 200
+    assert len(response.json()) == 2
 
 
 def test_add_product_should_update_users_product_ids(

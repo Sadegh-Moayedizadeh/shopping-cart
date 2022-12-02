@@ -30,8 +30,8 @@ def view_single_product(
 
 
 @router.get('/view-all-products')
-def veiw_all_products() -> Any:
-    return requests.get(get_all_products_api_address()).json()
+def view_all_products(db=Depends(get_db)) -> Any:
+    return product_crud.get_multi(db=db)
 
 
 @router.put('/add-product', response_model=schemas.User)

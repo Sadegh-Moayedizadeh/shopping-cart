@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from shopping_cart.crud import user_crud
 from shopping_cart.db import SessionLocal
 from shopping_cart.main import app
-from shopping_cart.models import User
+from shopping_cart.models import User, Product, Cart
 from shopping_cart.schemas import UserCreate
 from shopping_cart.settings import API_STR
 
@@ -31,6 +31,20 @@ def fake_password() -> str:
 def delete_users(db: Session, fake_email: str) -> None:
     yield
     db.query(User).delete()
+    db.commit()
+
+
+@pytest.fixture(scope='function')
+def delete_products(db: Session) -> None:
+    yield
+    db.query(Product).delete()
+    db.commit()
+
+
+@pytest.fixture(scope='function')
+def delete_carts(db: Session) -> None:
+    yield
+    db.query(Cart).delete()
     db.commit()
 
 
