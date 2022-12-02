@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from shopping_cart import schemas
-from shopping_cart.crud import user_crud
+from shopping_cart.crud import user_crud, product_crud
 from shopping_cart.models import User
 from shopping_cart.utils.db import get_db
 from shopping_cart.utils.products import (get_all_products_api_address,
@@ -17,15 +17,16 @@ router = APIRouter()
 
 @router.get('/view-single-product/{product_id}')
 def view_single_product(
-    product_id: int
+    product_id: int,
+    db=Depends(get_db)
 ) -> Any:
-    response = requests.get(get_single_product_api_address(product_id))
-    if not response.content:
+    product = product_crud.get(db=db, id=product_id)
+    if not product:
         raise HTTPException(
             status_code=404,
             detail='There is no product with the given id.',
         )
-    return response.json()
+    return product
 
 
 @router.get('/view-all-products')

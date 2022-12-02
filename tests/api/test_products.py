@@ -3,7 +3,8 @@ from typing import Dict
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
 
-from shopping_cart.crud import user_crud
+from shopping_cart.crud import user_crud, product_crud
+from shopping_cart.schemas import ProductCreate
 from shopping_cart.models import User
 from shopping_cart.settings import API_STR
 
@@ -20,9 +21,20 @@ def test_view_product_with_non_existing_id_should_return_404_response(
 
 
 def test_view_product_with_an_existing_id_should_return_200_response(
-    client: TestClient
+    client: TestClient,
+    db: Session
 ) -> None:
-    # Arrange, Act
+    # Arrange
+    product_in = ProductCreate(
+        title='fake_title',
+        price=0,
+        category='fake_category',
+        description='fake_description',
+        image='fake_image_address'
+    )
+    product = product_crud.create(db=db, obj_in=product_in)
+
+    # Act
     response = client.get(
         '{}/products/view-single-product/{}'.format(API_STR, '1')
     )
