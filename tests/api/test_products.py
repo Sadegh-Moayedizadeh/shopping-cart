@@ -77,28 +77,36 @@ def test_view_all_products(
     assert len(response.json()) == 2
 
 
-def test_add_product_should_update_users_product_ids(
+def test_add_product_to_user(
     client: TestClient,
-    user_stub_token_headers: Dict[str, str],
     db: Session,
     user_stub: User,
-    delete_users: None
+    user_stub_token_headers: Dict[str, str],
+    delete_users: None,
+    delete_carts: None,
+    delete_products: None
 ) -> None:
     # Arrange
+    product_in = ProductCreate(
+        title='fake_title',
+        price=0,
+        category='fake_category',
+        description='fake_description',
+        image='fake_image_address'
+    )
+    product = product_crud.create(db=db, obj_in=product_in)
+
+    # Act
     response = client.put(
         '{}/products/add-product'.format(API_STR),
-        params={'product_id': 1},
+        params={'product_id': product.id},
         headers=user_stub_token_headers
     )
 
-    # Act
-    updated_user_json = response.json()
-    db.refresh(user_stub)
-
     # Assert
     assert response.status_code == 200
-    assert updated_user_json['product_ids'] == [1]
-    assert user_stub.product_ids == [1]
+    assert user_stub.cart
+    assert user_stub.cart.products == [product]
 
 
 def test_add_product_with_non_existing_id_should_return_404_response(

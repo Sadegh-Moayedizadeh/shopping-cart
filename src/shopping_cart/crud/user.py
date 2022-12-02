@@ -5,7 +5,7 @@ import requests
 from sqlalchemy.orm import Session
 
 from shopping_cart.crud.base import CRUDBase
-from shopping_cart.models import User
+from shopping_cart.models import User, Cart
 from shopping_cart.schemas import UserCreate, UserUpdate
 from shopping_cart.utils.products import get_single_product_api_address
 from shopping_cart.utils.security import get_password_hash, verify_password
@@ -28,7 +28,11 @@ class UserCRUD(CRUDBase[User, UserCreate, UserUpdate]):
         return db_obj
 
     def update(
-        self, db: Session, *, db_obj: User, obj_in: Union[UserUpdate, Dict[str, Any]]
+        self,
+        db: Session,
+        *,
+        db_obj: User,
+        obj_in: Union[UserUpdate, Dict[str, Any]]
     ) -> User:
         if isinstance(obj_in, dict):
             update_data = obj_in
@@ -40,7 +44,24 @@ class UserCRUD(CRUDBase[User, UserCreate, UserUpdate]):
             update_data["hashed_password"] = hashed_password
         return super().update(db, db_obj=db_obj, obj_in=update_data)
 
-    def authenticate(self, db: Session, *, email: str, password: str) -> Optional[User]:
+    def update_with_cart(
+        self,
+        db: Session,
+        *,
+        cart: Cart,
+        db_obj: User
+    ) -> User:
+        db_obj.cart = cart
+        db.commit()
+        return db_obj
+
+    def authenticate(
+        self,
+        db: Session,
+        *,
+        email: str,
+        password: str
+    ) -> Optional[User]:
         user = self.get_by_email(db, email=email)
         if not user:
             return

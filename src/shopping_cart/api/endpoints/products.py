@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from shopping_cart import schemas
-from shopping_cart.crud import user_crud, product_crud
+from shopping_cart.crud import user_crud, product_crud, cart_crud
 from shopping_cart.models import User
 from shopping_cart.utils.db import get_db
 from shopping_cart.utils.products import (get_all_products_api_address,
@@ -41,17 +41,21 @@ def add_product_to_user(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_active_user)
 ) -> Any:
-    user = user_crud.add_product(
-        db=db,
-        product_id=product_id,
-        email=current_user.email
-    )
-    if not user:
+    product = product_crud.get(db=db, id=product_id)
+    if not product:
         raise HTTPException(
             status_code=404,
-            detail='No product with the given id or no user.',
+            detail='There is no product with the given id.',
         )
-    return user
+
+    cart = current_user.cart
+    if not cart:
+        cart_in = schemas.CartCreate()
+        new_cart = cart_crud.create(db=db, obj_in=cart_in)
+        user_crud.update_with_cart(db=db, cart=new_cart, db_obj=current_user)
+        cart = new_cart
+
+    return cart_crud.update_with_product(db=db, db_obj=cart, product=product)
 
 
 @router.put('/remove-product', response_model=schemas.User)
