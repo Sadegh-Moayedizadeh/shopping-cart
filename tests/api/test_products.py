@@ -109,98 +109,46 @@ def test_add_product_to_user(
     assert user_stub.cart.products == [product]
 
 
-def test_add_product_with_non_existing_id_should_return_404_response(
+def test_remove_product_from_user(
     client: TestClient,
+    db: Session,
+    user_stub: User,
     user_stub_token_headers: Dict[str, str],
-    user_stub: User,
-    db: Session,
-    delete_users: None
-) -> None:
-    # Arrange, Act
-    response = client.put(
-        '{}/products/add-product'.format(API_STR),
-        params={'product_id': -1},
-        headers=user_stub_token_headers
-    )
-    db.refresh(user_stub)
-
-    # Assert
-    assert response.status_code == 404
-    assert user_stub.product_ids == []
-
-
-def test_add_product_for_an_unauthorized_user_should_return_401_response(
-    client: TestClient,
-    user_stub: User,
-    db: Session,
-    delete_users: None
-) -> None:
-    # Arrange, Act
-    response = client.put(
-        '{}/products/add-product'.format(API_STR),
-        params={'product_id': 1}
-    )
-    db.refresh(user_stub)
-
-    # Assert
-    assert response.status_code == 401
-    assert user_stub.product_ids == []
-
-
-def test_remove_product_should_remove_its_id_from_users_product_ids(
-    client: TestClient,
-    user_stub_token_headers: Dict[str, str],
-    db: Session,
-    user_stub: User,
-    delete_users: None
+    delete_users: None,
+    delete_carts: None,
+    delete_products: None
 ) -> None:
     # Arrange
-    user_crud.add_product(db=db, product_id=1, email=user_stub.email)
-    db.refresh(user_stub)
+    product_in = ProductCreate(
+        title='fake_title',
+        price=0,
+        category='fake_category',
+        description='fake_description',
+        image='fake_image_address'
+    )
+    product = product_crud.create(db=db, obj_in=product_in)
+
+    client.put(
+        '{}/products/add-product'.format(API_STR),
+        params={'product_id': product.id},
+        headers=user_stub_token_headers
+    )
 
     # Assume
-    assert user_stub.product_ids == [1]
+    assert user_stub.cart
+    assert user_stub.cart.products == [product]
 
     # Act
     response = client.put(
         '{}/products/remove-product'.format(API_STR),
-        params={'product_id': 1},
+        params={'product_id': product.id},
         headers=user_stub_token_headers
     )
-    updated_user_json = response.json()
     db.refresh(user_stub)
 
     # Assert
-    assert user_stub.product_ids == []
-    assert updated_user_json['product_ids'] == []
-
-
-def test_remove_product_that_is_not_present_in_users_product_ids_should_remain_product_ids_intact(
-    client: TestClient,
-    user_stub_token_headers: Dict[str, str],
-    db: Session,
-    user_stub: User,
-    delete_users: None
-) -> None:
-    # Arrange
-    user_crud.add_product(db=db, product_id=1, email=user_stub.email)
-    db.refresh(user_stub)
-
-    # Assume
-    assert user_stub.product_ids == [1]
-
-    # Act
-    response = client.put(
-        '{}/products/remove-product'.format(API_STR),
-        params={'product_id': 2},
-        headers=user_stub_token_headers
-    )
-    updated_user_json = response.json()
-    db.refresh(user_stub)
-
-    # Assert
-    assert user_stub.product_ids == [1]
-    assert updated_user_json['product_ids'] == [1]
+    assert response.status_code == 200
+    assert user_stub.cart.products == []
 
 
 def test_show_users_selected_products_should_return_all_its_product_ids(

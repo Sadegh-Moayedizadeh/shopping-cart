@@ -65,17 +65,7 @@ def remove_product_from_user(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_active_user)
 ) -> Any:
-    user = user_crud.remove_product(
-        db=db,
-        product_id=product_id,
-        email=current_user.email
-    )
-    if not user:
-        raise HTTPException(
-            status_code=404,
-            detail='No product with the given id or no user.',
-        )
-    return user
+    return product_crud.remove(db=db, id=product_id)
 
 
 @router.get('/all-selected-products')
