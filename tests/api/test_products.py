@@ -3,8 +3,8 @@ from typing import Dict
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
 
-from shopping_cart.crud import user_crud, product_crud
-from shopping_cart.schemas import ProductCreate
+from shopping_cart.crud import user_crud, product_crud, cart_crud
+from shopping_cart.schemas import ProductCreate, CartCreate
 from shopping_cart.models import User
 from shopping_cart.settings import API_STR
 
@@ -151,19 +151,34 @@ def test_remove_product_from_user(
     assert user_stub.cart.products == []
 
 
-def test_show_users_selected_products_should_return_all_its_product_ids(
+def test_get_all_users_products(
     client: TestClient,
-    user_stub_token_headers: Dict[str, str],
     db: Session,
     user_stub: User,
-    delete_users: None
+    user_stub_token_headers: Dict[str, str],
+    delete_users: None,
+    delete_carts: None,
+    delete_products: None
 ) -> None:
     # Arrange
-    user_crud.add_product(db=db, product_id=1, email=user_stub.email)
-    db.refresh(user_stub)
+    product_in = ProductCreate(
+        title='fake_title',
+        price=0,
+        category='fake_category',
+        description='fake_description',
+        image='fake_image_address'
+    )
+    product = product_crud.create(db=db, obj_in=product_in)
+
+    client.put(
+        '{}/products/add-product'.format(API_STR),
+        params={'product_id': product.id},
+        headers=user_stub_token_headers
+    )
 
     # Assume
-    assert user_stub.product_ids == [1]
+    assert user_stub.cart
+    assert user_stub.cart.products == [product]
 
     # Act
     response = client.get(
@@ -172,31 +187,6 @@ def test_show_users_selected_products_should_return_all_its_product_ids(
     )
 
     # Assert
-    assert response.json() == [1]
-
-
-def test_purchase_selected_products_should_empty_users_product_ids(
-    client: TestClient,
-    user_stub_token_headers: Dict[str, str],
-    db: Session,
-    user_stub: User,
-    delete_users: None
-) -> None:
-    # Arrange
-    user_crud.add_product(db=db, product_id=1, email=user_stub.email)
-    user_crud.add_product(db=db, product_id=2, email=user_stub.email)
-    db.refresh(user_stub)
-
-    # Assume
-    assert user_stub.product_ids == [1, 2]
-
-    # Act
-    response = client.put(
-        '{}/products/purchase'.format(API_STR),
-        headers=user_stub_token_headers
-    )
-    db.refresh(user_stub)
-
-    # Assert
-    assert response.json()['product_ids'] == []
-    assert user_stub.product_ids == []
+    assert response.status_code == 200
+    assert len(response.json()) == 1
+    assert response.json()[0]['id'] == product.id

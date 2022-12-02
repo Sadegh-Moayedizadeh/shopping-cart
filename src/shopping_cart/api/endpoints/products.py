@@ -72,13 +72,4 @@ def remove_product_from_user(
 def get_all_products_for_user(
     current_user: User = Depends(get_current_active_user)
 ) -> Any:
-    return current_user.product_ids
-
-
-@router.put('/purchase', response_model=schemas.User)
-def purchase(
-    *,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_active_user)
-) -> Any:
-    return user_crud.remove_all_products(db=db, email=current_user.email)
+    return current_user.cart.products
