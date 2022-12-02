@@ -37,8 +37,9 @@ def test_view_product_with_an_existing_id_should_return_200_response(
 
     # Act
     response = client.get(
-        '{}/products/view-single-product/{}'.format(API_STR, '1')
+        '{}/products/view-single-product/{}'.format(API_STR, str(product.id))
     )
+
     # Assert
     assert response.status_code == 200
 
