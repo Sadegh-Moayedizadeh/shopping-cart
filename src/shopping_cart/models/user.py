@@ -11,5 +11,4 @@ class User(Base):
     hashed_password = Column(String, nullable=False)
     is_active = Column(Boolean(), default=True)
     is_superuser = Column(Boolean(), default=False)
-    # Only postgreql backend has support for ARRAY operations
-    product_ids = Column(ARRAY(Integer), nullable=True, default=[])
+    cart = relationship('Cart', back_populates='owner')
