@@ -21,7 +21,7 @@ fileConfig(config.config_file_name)
 # target_metadata = mymodel.Base.metadata
 # target_metadata = None
 
-from app.db.base import Base  # noqa
+from shopping_cart.db import Base
 
 target_metadata = Base.metadata
 
@@ -31,7 +31,7 @@ target_metadata = Base.metadata
 # ... etc.
 
 
-dotenv_path = os.path.join(dirname(__file__), 'src', 'shopping_cart', '.env')
+dotenv_path = os.path.join(os.path.dirname(__file__), 'src', 'shopping_cart', '.env')
 load_dotenv(dotenv_path)
 
 
