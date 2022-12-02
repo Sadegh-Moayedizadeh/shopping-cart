@@ -8,7 +8,6 @@ class UserBase(BaseModel):
     is_active: Optional[bool] = True
     is_superuser: bool = False
     full_name: Optional[str] = None
-    product_ids: List[int] = []
 
 
 class UserCreate(UserBase):
@@ -25,10 +24,6 @@ class UserInDBBase(UserBase):
 
     class Config:
         orm_mode = True
-
-
-class UserProductIds(BaseModel):
-    product_ids: List[int]
 
 
 class User(UserInDBBase):
